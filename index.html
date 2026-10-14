@@ -1,702 +1,990 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ocean Lifespaces - Stationery Management System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Lifespaces - Stationery Management System</title>
 
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#27364b}
-header{background:#c0b6b6;padding:18px 25px;display:flex;align-items:center;gap:20px}
-header img{width:100px;max-height:85px;object-fit:contain}
-h1{margin:0;color:#053170;font-size:clamp(20px,3vw,32px)}
-.subtitle{color:red;margin:7px 0 0}
-.container{max-width:1400px;margin:25px auto;padding:0 20px 40px}
-.card{background:white;padding:25px;border-radius:10px;box-shadow:0 3px 12px #0001;margin-bottom:22px}
-.section-title{font-size:21px;font-weight:bold;margin-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 18px}
-.group{margin-bottom:18px}
-label{display:block;font-size:14px;font-weight:bold;margin-bottom:7px}
-.required{color:red}
-input,select{width:100%;height:43px;border:1px solid #b9c0c8;border-radius:5px;padding:0 10px;font-size:15px;background:white;color:#27364b}
-input:focus,select:focus{outline:2px solid #26364d22;border-color:#26364d}
-.table-wrap{overflow:auto;width:100%}
-table{border-collapse:collapse;width:100%}
-.items-table{min-width:680px}
-th,td{border:1px solid #c7ced8;padding:9px;text-align:left}
-th{background:#e8edf5}
-.items-table td:first-child{text-align:center;background:#eef2f8;font-weight:bold}
-.items-table select{height:39px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-button{border:0;border-radius:5px;padding:12px 18px;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.6;cursor:wait}
-.submit{background:#26364d;color:white}
-.admin-btn{background:#6d28d9;color:white}
-.excel-btn{background:#217346;color:white}
-.clear-btn{background:#e5e7eb;color:#26364d}
-.logout-btn{background:#dc2626;color:white}
-#message{display:none;margin-top:15px;padding:12px;border-radius:5px;white-space:pre-wrap}
-.hidden{display:none!important}
-.login{max-width:450px;margin:25px auto}
-.error{background:#fee2e2;color:#991b1b;padding:10px;margin-top:12px;border-radius:5px}
-.info{background:#eaf7ee;color:#166534;padding:12px;border-radius:5px;margin:12px 0}
-.admin-table{min-width:1250px;font-size:13px;margin-top:16px}
-.admin-table td{overflow-wrap:anywhere;white-space:normal}
-.admin-table td:last-child{min-width:180px;max-width:350px}
-.admin-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.admin-search{max-width:400px;margin-top:15px}
-.count{font-weight:bold;margin-top:12px}
-.current-date{font-weight:bold;margin:12px 0;color:#053170}
-#adminPanel.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;width:100vw;height:100dvh;max-width:none;overflow:auto;border-radius:0;padding:20px;background:white}
-#adminPanel.fullscreen .table-wrap{max-height:calc(100dvh - 300px);overflow:auto}
-#adminPanel.fullscreen th{position:sticky;top:0;z-index:2}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){
- header{padding:15px;gap:12px}
- header img{width:65px}
- .container{padding:0 12px 25px}
- .card{padding:16px}
- .grid{grid-template-columns:1fr}
- #adminPanel.fullscreen{padding:12px}
- #adminPanel.fullscreen .table-wrap{max-height:calc(100dvh - 350px)}
-}
-</style>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #27364b
+        }
+
+        header {
+            background: #c0b6b6;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px
+        }
+
+        header img {
+            width: 100px;
+            max-height: 85px;
+            object-fit: contain
+        }
+
+        h1 {
+            margin: 0;
+            color: #053170;
+            font-size: clamp(20px, 3vw, 32px)
+        }
+
+        .subtitle {
+            color: red;
+            margin: 7px 0 0
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 25px auto;
+            padding: 0 20px 40px
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px #0001;
+            margin-bottom: 22px
+        }
+
+        .section-title {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 20px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0 18px
+        }
+
+        .group {
+            margin-bottom: 18px
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 7px
+        }
+
+        .required {
+            color: red
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 43px;
+            border: 1px solid #b9c0c8;
+            border-radius: 5px;
+            padding: 0 10px;
+            font-size: 15px;
+            background: white;
+            color: #27364b
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #26364d22;
+            border-color: #26364d
+        }
+
+        .table-wrap {
+            overflow: auto;
+            width: 100%
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%
+        }
+
+        .items-table {
+            min-width: 680px
+        }
+
+        th,
+        td {
+            border: 1px solid #c7ced8;
+            padding: 9px;
+            text-align: left
+        }
+
+        th {
+            background: #e8edf5
+        }
+
+        .items-table td:first-child {
+            text-align: center;
+            background: #eef2f8;
+            font-weight: bold
+        }
+
+        .items-table select {
+            height: 39px
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px
+        }
+
+        button {
+            border: 0;
+            border-radius: 5px;
+            padding: 12px 18px;
+            font-weight: bold;
+            cursor: pointer
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: wait
+        }
+
+        .submit {
+            background: #26364d;
+            color: white
+        }
+
+        .admin-btn {
+            background: #6d28d9;
+            color: white
+        }
+
+        .excel-btn {
+            background: #217346;
+            color: white
+        }
+
+        .clear-btn {
+            background: #e5e7eb;
+            color: #26364d
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: white
+        }
+
+        #message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        .login {
+            max-width: 450px;
+            margin: 25px auto
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 10px;
+            margin-top: 12px;
+            border-radius: 5px
+        }
+
+        .info {
+            background: #eaf7ee;
+            color: #166534;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 12px 0
+        }
+
+        .admin-table {
+            min-width: 1200px;
+            font-size: 13px;
+            margin-top: 16px
+        }
+
+        .admin-table td {
+            overflow-wrap: anywhere;
+            white-space: normal
+        }
+
+        .admin-table td:last-child {
+            min-width: 180px;
+            max-width: 350px
+        }
+
+        .admin-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .admin-search {
+            max-width: 400px;
+            margin-top: 15px
+        }
+
+        .count {
+            font-weight: bold;
+            margin-top: 12px
+        }
+
+        .current-date {
+            font-weight: bold;
+            margin: 12px 0;
+            color: #053170
+        }
+
+        #adminPanel.fullscreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            margin: 0;
+            width: 100vw;
+            height: 100dvh;
+            max-width: none;
+            overflow: auto;
+            border-radius: 0;
+            padding: 20px;
+            background: white
+        }
+
+        #adminPanel.fullscreen .table-wrap {
+            max-height: calc(100dvh - 300px);
+            overflow: auto
+        }
+
+        #adminPanel.fullscreen th {
+            position: sticky;
+            top: 0;
+            z-index: 2
+        }
+
+        @media(max-width:850px) {
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+        }
+
+        @media(max-width:600px) {
+            header {
+                padding: 15px;
+                gap: 12px
+            }
+
+            header img {
+                width: 65px
+            }
+
+            .container {
+                padding: 0 12px 25px
+            }
+
+            .card {
+                padding: 16px
+            }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            #adminPanel.fullscreen {
+                padding: 12px
+            }
+
+            #adminPanel.fullscreen .table-wrap {
+                max-height: calc(100dvh - 350px)
+            }
+        }
+    </style>
 </head>
 
 <body>
-<header>
-<img src="Logo.jpeg" alt="Ocean Lifespaces Logo"
- onerror="this.style.display='none'">
-<div>
-<h1>Ocean Lifespaces India Private Limited</h1>
-<p class="subtitle">Stationery Management System</p>
-</div>
-</header>
-
-<main class="container">
-
-<section class="card" id="userSection">
-<div class="section-title">Stationery Request Form</div>
-
-<form id="stationeryForm">
-<div class="grid">
-
-<div class="group">
-<label for="project">Name Of The Project <span class="required">*</span></label>
-<select id="project" required>
-<option value="">Choose</option>
-<option>Ctrls-Kochi</option>
-<option>EY-Global Kochi</option>
-</select>
-</div>
-
-<div class="group">
-<label for="company">Company <span class="required">*</span></label>
-<select id="company" required>
-<option value="">Choose</option>
-<option>Ocean Lifespaces</option>
-</select>
-</div>
-
-<div class="group">
-<label for="employeeName">Employee Name <span class="required">*</span></label>
-<input id="employeeName" required maxlength="120" placeholder="Your Answer">
-</div>
-
-<div class="group">
-<label for="empNo">Emp-No <span class="required">*</span></label>
-<input id="empNo" required maxlength="50" placeholder="Your Answer">
-</div>
-
-<div class="group">
-<label for="mobile">Mobile Number <span class="required">*</span></label>
-<input id="mobile" type="tel" required pattern="[0-9+() -]{10,18}"
- maxlength="18" placeholder="Your Answer">
-</div>
-
-<div class="group">
-<label for="department">Department <span class="required">*</span></label>
-<select id="department" required>
-<option value="">Choose</option>
-<option>Administration</option>
-<option>Compliances</option>
-<option>EHS &amp; Safety</option>
-<option>HR</option>
-<option>IT</option>
-<option>MEP</option>
-<option>OHC</option>
-<option>P&amp;M</option>
-<option>Planning &amp; Documents</option>
-<option>Project</option>
-<option>QS &amp; Billing</option>
-<option>Quality(QA QC)</option>
-<option>Security Team</option>
-<option>Site Execution</option>
-<option>Store</option>
-<option>Survey</option>
-<option>Other's</option>
-</select>
-</div>
-
-<div class="group">
-<label for="requestDate">Request Date <span class="required">*</span></label>
-<input type="text" id="requestDate" placeholder="DD-MM-YYYY" required readonly>
-</div>
-
-</div>
-
-<div class="section-title" style="margin-top:22px">
-Stationery Items Requested <span class="required">*</span>
-</div>
-
-<div class="table-wrap">
-<table class="items-table">
-<thead>
-<tr><th>#</th><th>Types of Stationery</th><th>UOM</th><th>QTY</th></tr>
-</thead>
-<tbody id="itemsBody"></tbody>
-</table>
-</div>
-
-<div class="group" style="margin-top:18px">
-<label for="remarks">Remarks</label>
-<input id="remarks" maxlength="500" placeholder="Enter remarks (optional)">
-</div>
-
-<div class="actions">
-<button class="submit" id="submitBtn" type="submit">Submit</button>
-<button class="admin-btn" type="button" onclick="showAdminLogin()">Admin Login</button>
-</div>
-
-<div id="message" role="status" aria-live="polite"></div>
-</form>
-</section>
-
-<section class="card login hidden" id="adminLogin">
-<h2>Admin Login</h2>
-<div class="group">
-<label for="adminUsername">Username</label>
-<input id="adminUsername" autocomplete="username" placeholder="Admin username">
-</div>
-<div class="group">
-<label for="adminPassword">Password</label>
-<input id="adminPassword" type="password" autocomplete="current-password"
- placeholder="Admin password">
-</div>
-<div class="actions">
-<button class="admin-btn" id="loginBtn" type="button" onclick="adminLogin()">Login</button>
-<button class="clear-btn" type="button" onclick="closeAdminLogin()">Cancel</button>
-</div>
-<div id="loginError" class="error hidden"></div>
-</section>
-
-<section class="card hidden" id="adminPanel">
-<div class="admin-top">
-<div class="section-title">Admin Dashboard</div>
-<button class="clear-btn" id="fullscreenBtn" type="button"
- onclick="toggleFullscreen()">Exit Full Screen</button>
-</div>
-
-<div class="current-date">
-Current Date: <span id="adminCurrentDate"></span>
-</div>
-
-<div class="info">
-All records are loaded from the shared Google Sheets database.
-S.No. is stored in the database. Employee details, dates, quantities
-and Remarks are included in the dashboard and Excel export.
-</div>
-
-<div class="actions">
-<button class="excel-btn" id="exportBtn" type="button" onclick="exportToExcel()">Download All Data (Excel)</button>
-<button class="clear-btn" id="refreshBtn" type="button" onclick="loadAdminData()">Refresh Data</button>
-<button class="clear-btn" type="button" onclick="clearAllData()">Clear All Data</button>
-<button class="logout-btn" type="button" onclick="adminLogout()">Logout</button>
-</div>
-
-<div class="admin-search">
-<input id="adminSearch" type="search"
- placeholder="Search employee, date, remarks..."
- oninput="renderAdminTable()">
-</div>
-
-<div class="count" id="recordCount">Records: 0</div>
-
-<div class="table-wrap">
-<table class="admin-table">
-<thead>
-<tr>
-<th>S.No.</th>
-<th>Employee</th>
-<th>Emp-No</th>
-<th>Mobile</th>
-<th>Project</th>
-<th>Company</th>
-<th>Department</th>
-<th>Date</th>
-<th>Item</th>
-<th>UOM</th>
-<th>Quantity</th>
-<th>Remarks</th>
-</tr>
-</thead>
-<tbody id="adminTableBody">
-<tr><td colspan="12">Log in to load records.</td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-</main>
-
-<script>
-"use strict";
-
-/* Replace this with your deployed Google Apps Script /exec URL. */
-const API_URL = "https://script.google.com/macros/s/AKfycbySZ_AtBw1betvpmZQHkmKUnFn5gF9Qv3XOba5FoUqQ6LpYx5c0d2VfIB7_nEdc0wUBZg/exec";
-
-let requests = [];
-let adminToken = "";
-
-const stationeryItems = [
-"A3 Envelop Cover Ocean",
-"A4 Envelop Cover Ocean",
-"Binder Clip -15 MM",
-"Binder Clip -19 MM",
-"Binder Clip -25MM",
-"Binder Clip -32MM",
-"Binder Clip -41MM",
-"Black Pen",
-"Blue Pen",
-"Box File – (Medium Size)",
-"Calculator Basic Business (For , Planning)",
-"Carbon Sheet Blue",
-"CD Marker Black (Safety)",
-"CD Marker Blue (Safety)",
-"CD Marker Green (Safety)",
-"Celotape -Small",
-"Double Sided Tape (3-MM)",
-"Drinking water Glass Medium Size",
-"Dust bin-big ( blue )",
-"Dust bin-big ( Green )",
-"Dustbin-Office Close type",
-"Fevistic",
-"Flate File",
-"Flex kwik",
-"Floor Mate",
-"Floor mop",
-"GARBAGE BAG ( Medium size )(Office Use )",
-"Gum",
-"Harpic",
-"Highlighter - multicolor",
-"Inward Stamp",
-"Lyzal",
-"Marker for White board luxor (Black)",
-"Marker for White board luxor (blue)",
-"Marker for White board luxor (Red)",
-"Marker for White board luxor(Green)",
-"Ocean Round Stamp -Chennai address",
-"Ocean Round Stamp -Kochi",
-"odonil jasmine mist",
-"Out ward Stamp",
-"Packing Tape -2''inch Brown",
-"Packing Tape -2''inch cello",
-"Penholder",
-"Permenent marker",
-"Pencil HP",
-"RED Pen",
-"Register - 3no.s (Safety)",
-"Room spray multi flavour",
-"Scale (steel)-30cm",
-"Stamp Pad Big",
-"Stamp Pad ink",
-"Stamp Pad Small",
-"Stapler Big",
-"Stapler Pin Big",
-"Stapler Pin Small (Full Box )",
-"Stapler Small",
-"Sticky notes",
-"Stretch film roll - 2 Feet (Packing Purpose)",
-"Tissue paper PKT",
-"Umberla ( Small Size )",
-"Umberla (Medium size )",
-"Water Bottle 1 ltr",
-"Whistle",
-"Writing Pad",
-"Other's",
-"Carbolic soap",
-"Dustbin",
-"Duster cloth",
-"Floor wiper",
-"Floor wiper with handle",
-"Liquid hand wash",
-"Phenyl",
-"Room freshener (spray)",
-"Scrubber (brush)",
-"Tissue paper",
-"Toilet cleaner",
-"Toilet-cleaning brush"
-];
-
-const uomOptions = [
-"BOX","BUNDLE","NO's","OTHER's","PAC","PCS","PKT","ROL","SET"
-];
-
-function getTodayDate() {
-    const parts = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Asia/Kolkata",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-    }).formatToParts(new Date());
-
-    const values = {};
-    parts.forEach(part => {
-        if (part.type !== "literal") values[part.type] = part.value;
-    });
-
-    return `${values.day}-${values.month}-${values.year}`;
-}
-
-function formatDate(value) {
-    if (value === null || value === undefined || value === "") return "";
-
-    const text = String(value).trim();
-
-    if (/^\d{2}-\d{2}-\d{4}$/.test(text)) return text;
-
-    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
-        const [year, month, day] = text.split("-");
-        return `${day}-${month}-${year}`;
-    }
-
-    const date = new Date(text);
-    if (Number.isNaN(date.getTime())) return text;
-
-    const parts = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Asia/Kolkata",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-    }).formatToParts(date);
-
-    const values = {};
-    parts.forEach(part => {
-        if (part.type !== "literal") values[part.type] = part.value;
-    });
-
-    return `${values.day}-${values.month}-${values.year}`;
-}
-
-function updateCurrentDates() {
-    document.getElementById("requestDate").value = getTodayDate();
-    document.getElementById("adminCurrentDate").textContent = getTodayDate();
-}
-
-function escapeHtml(value) {
-    return String(value ?? "").replace(/[&<>"']/g, ch => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-    })[ch]);
-}
-
-function field(row, name) {
-    if (!row) return "";
-
-    if (row[name] !== undefined && row[name] !== null) {
-        return row[name];
-    }
-
-    const key = Object.keys(row).find(
-        item => item.toLowerCase() === name.toLowerCase()
-    );
-
-    return key ? (row[key] ?? "") : "";
-}
-
-function createItemRows() {
-    const tbody = document.getElementById("itemsBody");
-    tbody.innerHTML = "";
-
-    for (let i = 1; i <= 5; i++) {
-        const tr = document.createElement("tr");
-
-        const numberCell = document.createElement("td");
-        numberCell.textContent = i;
-        tr.appendChild(numberCell);
-
-        const itemCell = document.createElement("td");
-        const itemSelect = document.createElement("select");
-        itemSelect.className = "item";
-        itemSelect.setAttribute("aria-label", "Stationery item row " + i);
-        itemSelect.add(new Option("Choose", ""));
-        stationeryItems.forEach(item => itemSelect.add(new Option(item, item)));
-        itemCell.appendChild(itemSelect);
-        tr.appendChild(itemCell);
-
-        const uomCell = document.createElement("td");
-        const uomSelect = document.createElement("select");
-        uomSelect.className = "uom";
-        uomSelect.setAttribute("aria-label", "UOM row " + i);
-        uomSelect.add(new Option("Choose", ""));
-        uomOptions.forEach(uom => uomSelect.add(new Option(uom, uom)));
-        uomCell.appendChild(uomSelect);
-        tr.appendChild(uomCell);
-
-        const qtyCell = document.createElement("td");
-        const qtySelect = document.createElement("select");
-        qtySelect.className = "qty";
-        qtySelect.setAttribute("aria-label", "Quantity row " + i);
-        qtySelect.add(new Option("Choose", ""));
-        for (let q = 1; q <= 10; q++) {
-            qtySelect.add(new Option(String(q), String(q)));
-        }
-        qtyCell.appendChild(qtySelect);
-        tr.appendChild(qtyCell);
-
-        tbody.appendChild(tr);
-    }
-}
-
-createItemRows();
-updateCurrentDates();
-
-async function postApi(payload) {
-    if (!API_URL || API_URL.includes("PASTE_YOUR")) {
-        throw new Error("Add your deployed Google Apps Script /exec URL to API_URL.");
-    }
-
-    const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {"Content-Type":"text/plain;charset=utf-8"},
-        body: JSON.stringify(payload),
-        redirect: "follow"
-    });
-
-    if (!response.ok) {
-        throw new Error("Server returned HTTP " + response.status);
-    }
-
-    return await response.json();
-}
-
-function showMessage(message, isError = false) {
-    const box = document.getElementById("message");
-    box.textContent = message;
-    box.style.display = "block";
-    box.style.background = isError ? "#fee2e2" : "#eaf7ee";
-    box.style.color = isError ? "#991b1b" : "#166534";
-}
-
-document.getElementById("stationeryForm").addEventListener("submit", async event => {
-    event.preventDefault();
-
-    const itemEls = [...document.querySelectorAll(".item")];
-    const uomEls = [...document.querySelectorAll(".uom")];
-    const qtyEls = [...document.querySelectorAll(".qty")];
-    const selectedItems = [];
-
-    for (let i = 0; i < itemEls.length; i++) {
-        const item = itemEls[i].value;
-        const uom = uomEls[i].value;
-        const quantity = qtyEls[i].value;
-
-        if (!item && !uom && !quantity) continue;
-
-        if (!item || !uom || !quantity) {
-            showMessage(
-                "Complete Item, UOM and QTY in row " + (i + 1) +
-                ", or leave the entire row blank.",
-                true
-            );
-            return;
+    <header>
+        <img src="Logo.jpeg" alt="Ocean Lifespaces Logo" onerror="this.style.display='none'">
+        <div>
+            <h1>Ocean Lifespaces India Private Limited</h1>
+            <p class="subtitle">Stationery Management System</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="card" id="userSection">
+            <div class="section-title">Stationery Request Form</div>
+
+            <form id="stationeryForm">
+                <div class="grid">
+
+                    <div class="group">
+                        <label for="project">Name Of The Project <span class="required">*</span></label>
+                        <select id="project" required>
+                            <option value="">Choose</option>
+                            <option>Ctrls-Kochi</option>
+                            <option>EY-Global Kochi</option>
+                        </select>
+                    </div>
+
+                    <div class="group">
+                        <label for="company">Company <span class="required">*</span></label>
+                        <select id="company" required>
+                            <option value="">Choose</option>
+                            <option>Ocean Lifespaces</option>
+                        </select>
+                    </div>
+
+                    <div class="group">
+                        <label for="employeeName">Employee Name <span class="required">*</span></label>
+                        <input id="employeeName" required maxlength="120" placeholder="Your Answer">
+                    </div>
+
+                    <div class="group">
+                        <label for="empNo">Emp-No <span class="required">*</span></label>
+                        <input id="empNo" required maxlength="50" placeholder="Your Answer">
+                    </div>
+
+                    <div class="group">
+                        <label for="mobile">Mobile Number <span class="required">*</span></label>
+                        <input id="mobile" type="tel" required pattern="[0-9+() -]{10,18}" maxlength="18"
+                            placeholder="Your Answer">
+                    </div>
+
+                    <div class="group">
+                        <label for="department">Department <span class="required">*</span></label>
+                        <select id="department" required>
+                            <option value="">Choose</option>
+                            <option>Administration</option>
+                            <option>Compliances</option>
+                            <option>EHS &amp; Safety</option>
+                            <option>HR</option>
+                            <option>IT</option>
+                            <option>MEP</option>
+                            <option>OHC</option>
+                            <option>P&amp;M</option>
+                            <option>Planning &amp; Documents</option>
+                            <option>Project</option>
+                            <option>QS &amp; Billing</option>
+                            <option>Quality(QA QC)</option>
+                            <option>Security Team</option>
+                            <option>Site Execution</option>
+                            <option>Store</option>
+                            <option>Survey</option>
+                            <option>Other's</option>
+                        </select>
+                    </div>
+
+                    <div class="group">
+                        <label for="requestDate">Request Date <span class="required">*</span></label>
+                        <input type="text" id="requestDate" placeholder="DD-MM-YYYY" required readonly>
+                    </div>
+                </div>
+
+                <div class="section-title" style="margin-top:22px">
+                    Stationery Items Requested <span class="required">*</span>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Types of Stationery</th>
+                                <th>UOM</th>
+                                <th>QTY</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="group" style="margin-top:18px">
+                    <label for="remarks">Remarks</label>
+                    <input id="remarks" maxlength="500" placeholder="Enter remarks (optional)">
+                </div>
+
+                <div class="actions">
+                    <button class="submit" id="submitBtn" type="submit">Submit</button>
+                    <button class="admin-btn" type="button" onclick="showAdminLogin()">Admin Login</button>
+                </div>
+
+                <div id="message" role="status" aria-live="polite"></div>
+            </form>
+        </section>
+
+        <section class="card login hidden" id="adminLogin">
+            <h2>Admin Login</h2>
+            <div class="group">
+                <label for="adminUsername">Username</label>
+                <input id="adminUsername" autocomplete="username" placeholder="Admin username">
+            </div>
+            <div class="group">
+                <label for="adminPassword">Password</label>
+                <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Admin password">
+            </div>
+            <div class="actions">
+                <button class="admin-btn" id="loginBtn" type="button" onclick="adminLogin()">Login</button>
+                <button class="clear-btn" type="button" onclick="closeAdminLogin()">Cancel</button>
+            </div>
+            <div id="loginError" class="error hidden"></div>
+        </section>
+
+        <section class="card hidden" id="adminPanel">
+            <div class="admin-top">
+                <div class="section-title">Admin Dashboard</div>
+                <button class="clear-btn" id="fullscreenBtn" type="button" onclick="toggleFullscreen()">Exit Full
+                    Screen</button>
+            </div>
+
+            <div class="current-date">
+                Current Date: <span id="adminCurrentDate"></span>
+            </div>
+
+            <div class="info">
+                All records are loaded from the shared Google Apps Script database.
+                Employee details, request dates, stationery quantities and remarks are
+                displayed below and included in the Excel export.
+            </div>
+
+            <div class="actions">
+                <button class="excel-btn" id="exportBtn" type="button" onclick="exportToExcel()">Download All Data
+                    (Excel)</button>
+                <button class="clear-btn" id="refreshBtn" type="button" onclick="loadAdminData()">Refresh Data</button>
+                <button class="clear-btn" type="button" onclick="clearAllData()">Clear All Data</button>
+                <button class="logout-btn" type="button" onclick="adminLogout()">Logout</button>
+            </div>
+
+            <div class="admin-search">
+                <input id="adminSearch" type="search" placeholder="Search employee, date, remarks..."
+                    oninput="renderAdminTable()">
+            </div>
+
+            <div class="count" id="recordCount">Records: 0</div>
+
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Employee</th>
+                            <th>Emp-No</th>
+                            <th>Mobile</th>
+                            <th>Project</th>
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Date</th>
+                            <th>Item</th>
+                            <th>UOM</th>
+                            <th>Quantity</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <tr>
+                            <td colspan="11">Log in to load records.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        "use strict";
+
+        /*
+        Keep your existing deployed Apps Script URL.
+        Required backend actions:
+        submit   {action:"submit", records:[...]}
+        login    {action:"login", username:"...", password:"..."}
+        getData  {action:"getData", token:"..."}
+        clearData {action:"clearData", token:"..."}
+        
+        Expected responses:
+        {success:true}
+        {success:true, token:"..."}
+        {success:true, records:[...]}
+        
+        The backend must return a records array with the same field names
+        used in the headers below, including Remarks and Date.
+        */
+
+        const API_URL = "https://script.google.com/macros/s/AKfycbySZ_AtBw1betvpmZQHkmKUnFn5gF9Qv3XOba5FoUqQ6LpYx5c0d2VfIB7_nEdc0wUBZg/exec";
+
+        let requests = [];
+        let adminToken = sessionStorage.getItem("adminToken") || "";
+
+        const stationeryItems = [
+            "A3 Envelop Cover Ocean",
+            "A4 Envelop Cover Ocean",
+            "Binder Clip -15 MM",
+            "Binder Clip -19 MM",
+            "Binder Clip -25MM",
+            "Binder Clip -32MM",
+            "Binder Clip -41MM",
+            "Black Pen",
+            "Blue Pen",
+            "Box File – (Medium Size)",
+            "Calculator Basic Business (For , Planning)",
+            "Carbon Sheet Blue",
+            "CD Marker Black (Safety)",
+            "CD Marker Blue (Safety)",
+            "CD Marker Green (Safety)",
+            "Celotape -Small",
+            "Double Sided Tape (3-MM)",
+            "Drinking water Glass Medium Size",
+            "Dust bin-big ( blue )",
+            "Dust bin-big ( Green )",
+            "Dustbin-Office Close type",
+            "Fevistic",
+            "Flate File",
+            "Flex kwik",
+            "Floor Mate",
+            "Floor mop",
+            "GARBAGE BAG ( Medium size )(Office Use )",
+            "Gum",
+            "Harpic",
+            "Highlighter - multicolor",
+            "Inward Stamp",
+            "Lyzal",
+            "Marker for White board luxor (Black)",
+            "Marker for White board luxor (blue)",
+            "Marker for White board luxor (Red)",
+            "Marker for White board luxor(Green)",
+            "Ocean Round Stamp -Chennai address",
+            "Ocean Round Stamp -Kochi",
+            "odonil jasmine mist",
+            "Out ward Stamp",
+            "Packing Tape -2''inch Brown",
+            "Packing Tape -2''inch cello",
+            "Penholder",
+            "Permenent marker",
+            "Pencil HP",
+            "RED Pen",
+            "Register - 3no.s (Safety)",
+            "Room spray multi flavour",
+            "Scale (steel)-30cm",
+            "Stamp Pad Big",
+            "Stamp Pad ink",
+            "Stamp Pad Small",
+            "Stapler Big",
+            "Stapler Pin Big",
+            "Stapler Pin Small (Full Box )",
+            "Stapler Small",
+            "Sticky notes",
+            "Stretch film roll - 2 Feet (Packing Purpose)",
+            "Tissue paper PKT",
+            "Umberla ( Small Size )",
+            "Umberla (Medium size )",
+            "Water Bottle 1 ltr",
+            "Whistle",
+            "Writing Pad",
+
+            "Other's",
+
+            "Carbolic soap",
+            "Dustbin",
+            "Duster cloth",
+            "Floor wiper",
+            "Floor wiper with handle",
+            "Liquid hand wash",
+            "Phenyl",
+            "Room freshener (spray)",
+            "Scrubber (brush)",
+            "Tissue paper",
+            "Toilet cleaner",
+            "Toilet-cleaning brush"
+        ];
+
+        const uomOptions = [
+            "BOX", "BUNDLE", "NO's", "OTHER's", "PAC", "PCS", "PKT", "ROL", "SET"
+        ];
+
+        /* Format the date in Indian time, displaying only DD-MM-YYYY. */
+        function getTodayDate() {
+            const parts = new Intl.DateTimeFormat("en-GB", {
+                timeZone: "Asia/Kolkata",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }).formatToParts(new Date());
+
+            const values = {};
+            parts.forEach(part => {
+                if (part.type !== "literal") values[part.type] = part.value;
+            });
+
+            return `${values.day}-${values.month}-${values.year}`;
         }
 
-        selectedItems.push({
-            "Item": item,
-            "UOM": uom,
-            "Quantity": Number(quantity)
-        });
-    }
+        /*
+        Normalize dates returned by the backend.
+        ISO timestamps are converted to the Indian calendar date.
+        Already formatted DD-MM-YYYY values remain unchanged.
+        */
+        function formatDate(value) {
+            if (value === null || value === undefined || value === "") return "";
 
-    if (selectedItems.length === 0) {
-        showMessage("Select at least one stationery item, UOM and quantity.", true);
-        return;
-    }
+            const text = String(value).trim();
 
-    const common = {
-        "Employee": document.getElementById("employeeName").value.trim(),
-        "Emp-No": document.getElementById("empNo").value.trim(),
-        "Mobile": document.getElementById("mobile").value.trim(),
-        "Project": document.getElementById("project").value,
-        "Company": document.getElementById("company").value,
-        "Department": document.getElementById("department").value,
-        "Date": getTodayDate(),
-        "Remarks": document.getElementById("remarks").value.trim()
-    };
+            if (/^\d{2}-\d{2}-\d{4}$/.test(text)) return text;
 
-    const records = selectedItems.map(item => ({...common, ...item}));
-
-    const submitBtn = document.getElementById("submitBtn");
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting...";
-
-    try {
-        const result = await postApi({action:"submit", records});
-
-        if (!result || result.success !== true) {
-            throw new Error(result?.message || "Server did not confirm saving.");
-        }
-
-        showMessage(records.length + " stationery item(s) saved successfully.");
-
-        document.getElementById("stationeryForm").reset();
-        itemEls.forEach(el => el.value = "");
-        uomEls.forEach(el => el.value = "");
-        qtyEls.forEach(el => el.value = "");
-        updateCurrentDates();
-
-    } catch (error) {
-        console.error(error);
-        showMessage(
-            "Unable to save online. Check the Apps Script deployment and URL.\n" +
-            (error.message || ""),
-            true
-        );
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Submit";
-    }
-});
-
-function showAdminLogin() {
-    document.getElementById("userSection").classList.add("hidden");
-    document.getElementById("adminPanel").classList.add("hidden");
-    document.getElementById("adminLogin").classList.remove("hidden");
-    document.getElementById("loginError").classList.add("hidden");
-}
-
-function closeAdminLogin() {
-    document.getElementById("adminLogin").classList.add("hidden");
-    document.getElementById("userSection").classList.remove("hidden");
-}
-
-async function adminLogin() {
-    const errorBox = document.getElementById("loginError");
-    const loginBtn = document.getElementById("loginBtn");
-    errorBox.classList.add("hidden");
-
-    const username = document.getElementById("adminUsername").value.trim();
-    const password = document.getElementById("adminPassword").value;
-
-    if (!username || !password) {
-        errorBox.textContent = "Enter both username and password.";
-        errorBox.classList.remove("hidden");
-        return;
-    }
-
-    loginBtn.disabled = true;
-    loginBtn.textContent = "Logging in...";
-
-    try {
-        const result = await postApi({action:"login", username, password});
-
-        if (!result?.success || !result.token) {
-            throw new Error(result?.message || "Invalid username or password.");
-        }
-
-        adminToken = result.token;
-        sessionStorage.setItem("adminToken", adminToken);
-
-        document.getElementById("adminLogin").classList.add("hidden");
-        document.getElementById("userSection").classList.add("hidden");
-
-        const panel = document.getElementById("adminPanel");
-        panel.classList.remove("hidden");
-        panel.classList.add("fullscreen");
-        document.getElementById("fullscreenBtn").textContent = "Exit Full Screen";
-
-        updateCurrentDates();
-        await loadAdminData();
-
-    } catch (error) {
-        errorBox.textContent = error.message || "Login failed. Check the backend.";
-        errorBox.classList.remove("hidden");
-    } finally {
-        loginBtn.disabled = false;
-        loginBtn.textContent = "Login";
-    }
-}
-
-async function loadAdminData() {
-    if (!adminToken) {
-        alert("Please log in as Admin.");
-        showAdminLogin();
-        return false;
-    }
-
-    const refreshBtn = document.getElementById("refreshBtn");
-    refreshBtn.disabled = true;
-
-    try {
-        const result = await postApi({action:"getData", token:adminToken});
-
-        if (!result?.success) {
-            if (result?.message?.includes("session")) {
-                adminToken = "";
-                sessionStorage.removeItem("adminToken");
+            if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+                const [year, month, day] = text.split("-");
+                return `${day}-${month}-${year}`;
             }
-            throw new Error(result?.message || "Admin session expired.");
+
+            const date = new Date(text);
+
+            if (Number.isNaN(date.getTime())) return text;
+
+            const parts = new Intl.DateTimeFormat("en-GB", {
+                timeZone: "Asia/Kolkata",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }).formatToParts(date);
+
+            const values = {};
+            parts.forEach(part => {
+                if (part.type !== "literal") values[part.type] = part.value;
+            });
+
+            return `${values.day}-${values.month}-${values.year}`;
         }
 
-        if (!Array.isArray(result.records)) {
-            throw new Error("Backend response must include a records array.");
+        function updateCurrentDates() {
+            document.getElementById("requestDate").value = getTodayDate();
+            document.getElementById("adminCurrentDate").textContent = getTodayDate();
         }
 
-        requests = result.records;
         updateCurrentDates();
-        renderAdminTable();
-        return true;
 
-    } catch (error) {
-        console.error(error);
-        alert("Unable to load shared data: " + (error.message || "Unknown error"));
-        return false;
-    } finally {
-        refreshBtn.disabled = false;
-    }
-}
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"']/g, ch => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            })[ch]);
+        }
 
-function renderAdminTable() {
-    const search = document.getElementById("adminSearch").value.trim().toLowerCase();
+        /* Read a field and tolerate common capitalization differences. */
+        function field(row, name) {
+            if (!row) return "";
 
-    const filtered = requests.filter(row =>
-        Object.values(row || {}).some(value =>
-            String(value ?? "").toLowerCase().includes(search)
-        )
-    );
+            if (row[name] !== undefined && row[name] !== null) {
+                return row[name];
+            }
 
-    document.getElementById("recordCount").textContent =
-        "Records: " + filtered.length + " shown / " + requests.length + " total";
+            const key = Object.keys(row).find(
+                item => item.toLowerCase() === name.toLowerCase()
+            );
 
-    const tbody = document.getElementById("adminTableBody");
+            return key ? (row[key] ?? "") : "";
+        }
 
-    if (filtered.length === 0) {
-        tbody.innerHTML =
-            '<tr><td colspan="12" style="text-align:center">No matching records found.</td></tr>';
-        return;
-    }
+        function createItemRows() {
+            const tbody = document.getElementById("itemsBody");
+            tbody.innerHTML = "";
 
-    tbody.innerHTML = filtered.map((row, index) => `
+            for (let i = 1; i <= 5; i++) {
+                const tr = document.createElement("tr");
+
+                const numberCell = document.createElement("td");
+                numberCell.textContent = i;
+                tr.appendChild(numberCell);
+
+                const itemCell = document.createElement("td");
+                const itemSelect = document.createElement("select");
+                itemSelect.className = "item";
+                itemSelect.setAttribute("aria-label", "Stationery item row " + i);
+                itemSelect.add(new Option("Choose", ""));
+                stationeryItems.forEach(item => itemSelect.add(new Option(item, item)));
+                itemCell.appendChild(itemSelect);
+                tr.appendChild(itemCell);
+
+                const uomCell = document.createElement("td");
+                const uomSelect = document.createElement("select");
+                uomSelect.className = "uom";
+                uomSelect.setAttribute("aria-label", "UOM row " + i);
+                uomSelect.add(new Option("Choose", ""));
+                uomOptions.forEach(uom => uomSelect.add(new Option(uom, uom)));
+                uomCell.appendChild(uomSelect);
+                tr.appendChild(uomCell);
+
+                const qtyCell = document.createElement("td");
+                const qtySelect = document.createElement("select");
+                qtySelect.className = "qty";
+                qtySelect.setAttribute("aria-label", "Quantity row " + i);
+                qtySelect.add(new Option("Choose", ""));
+                for (let q = 1; q <= 10; q++) {
+                    qtySelect.add(new Option(String(q), String(q)));
+                }
+                qtyCell.appendChild(qtySelect);
+                tr.appendChild(qtyCell);
+
+                tbody.appendChild(tr);
+            }
+        }
+
+        createItemRows();
+
+        async function postApi(payload) {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload),
+                redirect: "follow"
+            });
+
+            if (!response.ok) {
+                throw new Error("Server returned HTTP " + response.status);
+            }
+
+            return await response.json();
+        }
+
+        function showMessage(message, isError = false) {
+            const box = document.getElementById("message");
+            box.textContent = message;
+            box.style.display = "block";
+            box.style.background = isError ? "#fee2e2" : "#eaf7ee";
+            box.style.color = isError ? "#991b1b" : "#166534";
+        }
+
+        /* Submit selected items and save Remarks on every item record. */
+        document.getElementById("stationeryForm").addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const itemEls = [...document.querySelectorAll(".item")];
+            const uomEls = [...document.querySelectorAll(".uom")];
+            const qtyEls = [...document.querySelectorAll(".qty")];
+            const remarksEls = document.getElementById("remarks");
+            const selectedItems = [];
+
+            for (let i = 0; i < itemEls.length; i++) {
+                const item = itemEls[i].value;
+                const uom = uomEls[i].value;
+                const quantity = qtyEls[i].value;
+                // const remarks = remarksEls[i].value;
+
+                if (!item && !uom && !quantity) continue;
+
+                if (!item || !uom || !quantity) {
+                    showMessage(
+                        "Complete Item, UOM and QTY in row " + (i + 1) +
+                        ", or leave the entire row blank.",
+                        true
+                    );
+                    return;
+                }
+
+                selectedItems.push({
+                    "Item": item,
+                    "UOM": uom,
+                    "Quantity": Number(quantity),
+                    // "Remarks" : remarks
+                });
+            }
+
+            if (selectedItems.length === 0) {
+                showMessage("Select at least one stationery item, UOM and quantity.", true);
+                return;
+            }
+
+            const common = {
+                "Employee": document.getElementById("employeeName").value.trim(),
+                "Emp-No": document.getElementById("empNo").value.trim(),
+                "Mobile": document.getElementById("mobile").value.trim(),
+                "Project": document.getElementById("project").value,
+                "Company": document.getElementById("company").value,
+                "Department": document.getElementById("department").value,
+                "Date": getTodayDate(),
+                "Remarks": document.getElementById("remarks").value.trim()
+            };
+
+            /* Each selected item receives the employee's remarks and date. */
+            const records = selectedItems.map(item => ({
+                ...common,
+                ...item
+            }));
+
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+
+            try {
+                const result = await postApi({ action: "submit", records });
+
+                if (!result || result.success !== true) {
+                    throw new Error(result?.message || "Server did not confirm saving.");
+                }
+
+                showMessage(records.length + " stationery item(s) saved successfully.");
+
+                document.getElementById("stationeryForm").reset();
+                itemEls.forEach(el => el.value = "");
+                uomEls.forEach(el => el.value = "");
+                qtyEls.forEach(el => el.value = "");
+                updateCurrentDates();
+
+            } catch (error) {
+                console.error(error);
+                showMessage(
+                    "Unable to save online. Check your Apps Script deployment and submit action. " +
+                    (error.message || ""),
+                    true
+                );
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit";
+            }
+        });
+
+        function showAdminLogin() {
+            document.getElementById("userSection").classList.add("hidden");
+            document.getElementById("adminPanel").classList.add("hidden");
+            document.getElementById("adminLogin").classList.remove("hidden");
+            document.getElementById("loginError").classList.add("hidden");
+        }
+
+        function closeAdminLogin() {
+            document.getElementById("adminLogin").classList.add("hidden");
+            document.getElementById("userSection").classList.remove("hidden");
+        }
+
+        async function adminLogin() {
+            const errorBox = document.getElementById("loginError");
+            const loginBtn = document.getElementById("loginBtn");
+            errorBox.classList.add("hidden");
+
+            const username = document.getElementById("adminUsername").value.trim();
+            const password = document.getElementById("adminPassword").value;
+
+            if (!username || !password) {
+                errorBox.textContent = "Enter both username and password.";
+                errorBox.classList.remove("hidden");
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Logging in...";
+
+            try {
+                const result = await postApi({ action: "login", username, password });
+
+                if (!result?.success || !result.token) {
+                    throw new Error(result?.message || "Invalid username or password.");
+                }
+
+                adminToken = result.token;
+                sessionStorage.setItem("adminToken", adminToken);
+
+                document.getElementById("adminLogin").classList.add("hidden");
+                document.getElementById("userSection").classList.add("hidden");
+
+                const panel = document.getElementById("adminPanel");
+                panel.classList.remove("hidden");
+                panel.classList.add("fullscreen");
+                document.getElementById("fullscreenBtn").textContent = "Exit Full Screen";
+
+                updateCurrentDates();
+                await loadAdminData();
+
+            } catch (error) {
+                errorBox.textContent = error.message || "Login failed. Check the backend.";
+                errorBox.classList.remove("hidden");
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Login";
+            }
+        }
+
+        async function loadAdminData() {
+            if (!adminToken) {
+                alert("Please log in as Admin.");
+                showAdminLogin();
+                return false;
+            }
+
+            const refreshBtn = document.getElementById("refreshBtn");
+            refreshBtn.disabled = true;
+
+            try {
+                const result = await postApi({ action: "getData", token: adminToken });
+
+                if (!result?.success) {
+                    throw new Error(result?.message || "Admin session expired.");
+                }
+
+                if (!Array.isArray(result.records)) {
+                    throw new Error("Backend response must include a records array.");
+                }
+
+                requests = result.records;
+                console.log("Backend response:", result);
+                console.log("First record:", requests[0]);
+                console.log("Remarks value:", requests[0]?.["Remarks"]);
+                console.log("Available fields:", Object.keys(requests[0] || {}));
+                updateCurrentDates();
+                renderAdminTable();
+                return true;
+
+            } catch (error) {
+                console.error(error);
+                alert("Unable to load shared data: " + (error.message || "Unknown error"));
+                return false;
+            } finally {
+                refreshBtn.disabled = false;
+            }
+        }
+
+        /* Show remarks in the last column and search across every field. */
+        function renderAdminTable() {
+            const search = document.getElementById("adminSearch").value.trim().toLowerCase();
+
+            const filtered = requests.filter(row =>
+                Object.values(row || {}).some(value =>
+                    String(value ?? "").toLowerCase().includes(search)
+                )
+            );
+
+            document.getElementById("recordCount").textContent =
+                "Records: " + filtered.length + " shown / " + requests.length + " total";
+
+            const tbody = document.getElementById("adminTableBody");
+
+            if (filtered.length === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="11" style="text-align:center">No matching records found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(row => `
         <tr>
-            <td>${escapeHtml(field(row, "S.No.") || index + 1)}</td>
+            <td>${escapeHtml(field(row, "S.No."))}</td>
             <td>${escapeHtml(field(row, "Employee"))}</td>
             <td>${escapeHtml(field(row, "Emp-No"))}</td>
             <td>${escapeHtml(field(row, "Mobile"))}</td>
@@ -710,134 +998,154 @@ function renderAdminTable() {
             <td>${escapeHtml(field(row, "Remarks"))}</td>
         </tr>
     `).join("");
-}
-
-async function exportToExcel() {
-    if (!adminToken) {
-        alert("Only the authenticated Admin can export data.");
-        return;
-    }
-
-    if (typeof XLSX === "undefined") {
-        alert("Excel library failed to load. Check your internet connection.");
-        return;
-    }
-
-    const exportBtn = document.getElementById("exportBtn");
-    exportBtn.disabled = true;
-    exportBtn.textContent = "Preparing Excel...";
-
-    try {
-        const loaded = await loadAdminData();
-        if (!loaded) return;
-
-        if (requests.length === 0) {
-            alert("No saved requests found.");
-            return;
         }
 
-        const headers = [
-            "S.No.", "Employee", "Emp-No", "Mobile", "Project",
-            "Company", "Department", "Date", "Item", "UOM",
-            "Quantity", "Remarks"
-        ];
+        /* Download all records from the shared backend, including Remarks. */
+        async function exportToExcel() {
+            if (!adminToken) {
+                alert("Only the authenticated Admin can export data.");
+                return;
+            }
 
-        const rows = requests.map((row, index) => ({
-            "S.No.": field(row, "S.No.") || index + 1,
-            "Employee": field(row, "Employee"),
-            "Emp-No": field(row, "Emp-No"),
-            "Mobile": field(row, "Mobile"),
-            "Project": field(row, "Project"),
-            "Company": field(row, "Company"),
-            "Department": field(row, "Department"),
-            "Date": formatDate(field(row, "Date")),
-            "Item": field(row, "Item"),
-            "UOM": field(row, "UOM"),
-            "Quantity": field(row, "Quantity"),
-            "Remarks": field(row, "Remarks")
-        }));
+            if (typeof XLSX === "undefined") {
+                alert("Excel library failed to load. Check your internet connection.");
+                return;
+            }
 
-        const worksheet = XLSX.utils.json_to_sheet(rows, {header:headers});
+            const exportBtn = document.getElementById("exportBtn");
+            exportBtn.disabled = true;
+            exportBtn.textContent = "Preparing Excel...";
 
-        worksheet["!cols"] = [
-            {wch:10}, {wch:24}, {wch:15}, {wch:18},
-            {wch:22}, {wch:22}, {wch:22}, {wch:15},
-            {wch:42}, {wch:12}, {wch:12}, {wch:45}
-        ];
+            try {
+                const loaded = await loadAdminData();
+                if (!loaded) return;
 
-        rows.forEach((row, index) => {
-            const cell = worksheet["L" + (index + 2)];
-            if (cell) cell.alignment = {wrapText:true, vertical:"top"};
-        });
+                if (requests.length === 0) {
+                    alert("No saved requests found.");
+                    return;
+                }
 
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Stationery Requests");
+                const headers = [
+                    "S.No.",
+                    "Employee",
+                    "Emp-No",
+                    "Mobile",
+                    "Project",
+                    "Company",
+                    "Department",
+                    "Date",
+                    "Item",
+                    "UOM",
+                    "Quantity",
+                    "Remarks"
+                ];
 
-        XLSX.writeFile(
-            workbook,
-            "Stationery_Requests_" + getTodayDate() + ".xlsx"
-        );
+                const rows = requests.map(row => ({
+                    "S.No.": field(row, "S.No.") || index + 1,
+                    "Employee": field(row, "Employee"),
+                    "Emp-No": field(row, "Emp-No"),
+                    "Mobile": field(row, "Mobile"),
+                    "Project": field(row, "Project"),
+                    "Company": field(row, "Company"),
+                    "Department": field(row, "Department"),
+                    "Date": formatDate(field(row, "Date")),
+                    "Item": field(row, "Item"),
+                    "UOM": field(row, "UOM"),
+                    "Quantity": field(row, "Quantity"),
+                    "Remarks": field(row, "Remarks")
+                }));
 
-    } catch (error) {
-        console.error(error);
-        alert("Excel export failed. " + (error.message || "Unknown error"));
-    } finally {
-        exportBtn.disabled = false;
-        exportBtn.textContent = "Download All Data (Excel)";
-    }
-}
+                const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
 
-async function clearAllData() {
-    if (!adminToken) {
-        alert("Only Admin can clear data.");
-        return;
-    }
+                worksheet["!cols"] = [
+                    { wch: 8 },
+                    { wch: 24 },
+                    { wch: 15 },
+                    { wch: 18 },
+                    { wch: 22 },
+                    { wch: 22 },
+                    { wch: 22 },
+                    { wch: 15 },
+                    { wch: 42 },
+                    { wch: 12 },
+                    { wch: 12 },
+                    { wch: 45 }
+                ];
 
-    if (!confirm("Delete ALL stationery requests from the shared database? This cannot be undone.")) {
-        return;
-    }
+                rows.forEach((row, index) => {
+                    const cell = worksheet["K" + (index + 2)];
+                    if (cell) cell.alignment = { wrapText: true, vertical: "top" };
+                });
 
-    try {
-        const result = await postApi({action:"clearData", token:adminToken});
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Stationery Requests");
 
-        if (!result?.success) {
-            throw new Error(result?.message || "Clear operation failed.");
+                XLSX.writeFile(
+                    workbook,
+                    "Stationery_Requests_" + getTodayDate() + ".xlsx"
+                );
+
+            } catch (error) {
+                console.error(error);
+                alert("Excel export failed. " + (error.message || "Unknown error"));
+            } finally {
+                exportBtn.disabled = false;
+                exportBtn.textContent = "Download Excel";
+            }
         }
 
-        requests = [];
-        renderAdminTable();
-        alert("All stationery request data has been deleted.");
+        async function clearAllData() {
+            if (!adminToken) {
+                alert("Only Admin can clear data.");
+                return;
+            }
 
-    } catch (error) {
-        console.error(error);
-        alert("Unable to clear data: " + (error.message || "Unknown error"));
-    }
-}
+            if (!confirm("Delete ALL stationery requests from the shared database? This cannot be undone.")) {
+                return;
+            }
 
-function adminLogout() {
-    sessionStorage.removeItem("adminToken");
-    adminToken = "";
-    requests = [];
+            try {
+                const result = await postApi({ action: "clearData", token: adminToken });
 
-    document.getElementById("adminPanel").classList.add("hidden");
-    document.getElementById("adminPanel").classList.remove("fullscreen");
-    document.getElementById("adminLogin").classList.add("hidden");
-    document.getElementById("userSection").classList.remove("hidden");
-    document.getElementById("adminUsername").value = "";
-    document.getElementById("adminPassword").value = "";
-    document.getElementById("adminSearch").value = "";
-    document.getElementById("recordCount").textContent = "Records: 0";
-    document.getElementById("adminTableBody").innerHTML =
-        '<tr><td colspan="12">Log in to load records.</td></tr>';
-}
+                if (!result?.success) {
+                    throw new Error(result?.message || "Clear operation failed.");
+                }
 
-function toggleFullscreen() {
-    const panel = document.getElementById("adminPanel");
-    panel.classList.toggle("fullscreen");
+                requests = [];
+                renderAdminTable();
+                alert("All stationery request data has been deleted.");
 
-    document.getElementById("fullscreenBtn").textContent =
-        panel.classList.contains("fullscreen") ? "Exit Full Screen" : "Full Screen";
-}
-</script>
+            } catch (error) {
+                console.error(error);
+                alert("Unable to clear data: " + (error.message || "Unknown error"));
+            }
+        }
+
+        function adminLogout() {
+            sessionStorage.removeItem("adminToken");
+            adminToken = "";
+            requests = [];
+
+            document.getElementById("adminPanel").classList.add("hidden");
+            document.getElementById("adminPanel").classList.remove("fullscreen");
+            document.getElementById("adminLogin").classList.add("hidden");
+            document.getElementById("userSection").classList.remove("hidden");
+            document.getElementById("adminUsername").value = "";
+            document.getElementById("adminPassword").value = "";
+            document.getElementById("adminSearch").value = "";
+            document.getElementById("recordCount").textContent = "Records: 0";
+            document.getElementById("adminTableBody").innerHTML =
+                '<tr><td colspan="11">Log in to load records.</td></tr>';
+        }
+
+        function toggleFullscreen() {
+            const panel = document.getElementById("adminPanel");
+            panel.classList.toggle("fullscreen");
+
+            document.getElementById("fullscreenBtn").textContent =
+                panel.classList.contains("fullscreen") ? "Exit Full Screen" : "Full Screen";
+        }
+    </script>
 </body>
+
 </html>
